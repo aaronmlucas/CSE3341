@@ -3,8 +3,9 @@ import java.io.FileReader;
 class Scanner {
 
     public BufferedReader reader;
+    private final char EOF = (char) -1;
     private String token = "";
-    private String symbols = "+-*/=<>:;.,()[]";
+    private String symbols = "+-*/=<>:;.,()[]" + EOF;
     // Initialize the scanner
     Scanner(String filename) {
         try {
@@ -12,34 +13,36 @@ class Scanner {
             // Memory access is faster than disk access.
             reader = new BufferedReader(new FileReader(filename));
             nextToken(); // Read the first token
-
         } catch (Exception IOException) {
-            System.out.println("Error: Could not open" + filename + ".");
+            System.out.println("ERROR: Could not open" + filename + ".");
         }
     }
 
     // Advance to the next token
     public void nextToken() {
+        assert (reader != null);
+        assert (reader.markSupported());
         // Reset the token
         token = "";
         try{
             char currentChar = (char) reader.read();
-
+            
             // Ignore preceding whitespace characters
             while (Character.isWhitespace(currentChar)) {
                 currentChar = (char) reader.read();
             }
-            token += currentChar;
 
             // Check if the current character is a symbol.
             if (symbols.indexOf(currentChar) != -1){
+                token += currentChar;
                 // Check if the current character is an ASSIGN operator then peak to see if the token should be an EQUAL operator.
                 if (currentChar == '=') {
                     reader.mark(2);
                     if (currentChar == (char) reader.read()) {
+                        // currentChar is an EQUAL operator
                         token += currentChar;
                     } else {
-                        // Reset the reader back to the previous character
+                        // currentChar is an ASSIGN operator; reset the reader back to the previous character
                         reader.reset();
                     }  
                 }
@@ -48,16 +51,21 @@ class Scanner {
             
             // Begin reading and adding characters to the token
             boolean isConst = Character.isDigit(currentChar);
-            while(currentChar != (char) -1 && (!isConst && Character.isLetterOrDigit(currentChar)) || (isConst && Character.isDigit(currentChar))){
+            while(currentChar != EOF && ((!isConst && Character.isLetter(currentChar)) || Character.isDigit(currentChar))){
+                token += currentChar;
                 reader.mark(2);
                 currentChar = (char) reader.read();
-                token += currentChar;
-                
-            }
-            reader.reset();
 
+                // Reset reader back to the previous character if the end of the token is reached.
+                if (!Character.isLetterOrDigit(currentChar)){
+                    reader.reset();
+                }
+            }
+            if (token.length() == 0){
+                token += currentChar;
+            }
         } catch (Exception IOException) {
-            System.out.println("Error: Could not read from file.");
+            System.out.println("ERROR: Could not read from file.");
         }
         
     }
@@ -67,41 +75,41 @@ class Scanner {
         // Disgusting switch statement for all possible tokens.
         switch(token){
             // Keywords
-            case "AND":
+            case "and":
                 return Core.AND;
-            case "BEGIN":
+            case "begin":
                 return Core.BEGIN;
-            case "DO":
+            case "do":
                 return Core.DO;
-            case "END":
+            case "end":
                 return Core.END;
-            case "ELSE":
+            case "else":
                 return Core.ELSE;
-            case "IS":
+            case "is":
                 return Core.IS;
-            case "IF":
+            case "if":
                 return Core.IF;
-            case "IN": 
+            case "in": 
                 return Core.IN;
-            case "INTEGER":
+            case "integer":
                 return Core.INTEGER;
-            case "NEW":
+            case "new":
                 return Core.NEW;
-            case "NOT":
+            case "not":
                 return Core.NOT;
-            case "OR":
+            case "or":
                 return Core.OR;
-            case "OUT":
+            case "out":
                 return Core.OUT;
-            case "OBJECT":
+            case "object":
                 return Core.OBJECT;
-            case "PROCEDURE":
+            case "procedure":
                 return Core.PROCEDURE;
-            case "RETURN":
+            case "return":
                 return Core.RETURN;
-            case "THEN":
+            case "then":
                 return Core.THEN;
-            case "WHILE":
+            case "while":
                 return Core.WHILE;
             // Symbols
             case "+":
@@ -136,15 +144,12 @@ class Scanner {
                 return Core.RBRACE;
             // Others
             default:
-                if (Character.isDigit(token.charAt(0))) {
+                if (token.length() == 0 || token.charAt(0) == EOF){
+                    return Core.EOS;
+                } else if (Character.isDigit(token.charAt(0)) && Integer.parseInt(token) <= 99991) {
                     return Core.CONST;
-
                 } else if (Character.isLetter(token.charAt(0))) {
                     return Core.ID;
-
-                } else if (token.charAt(0) == (char) -1 ) {
-                    return Core.EOS;
-
                 } else{
                     System.out.println("ERROR: Invalid token: " + token);
                     return Core.ERROR;
@@ -159,6 +164,7 @@ class Scanner {
 
 	// Return the constant value
     public int getConst() {
+        //System.out.println(token.charAt(token.length()-1));
         return Integer.parseInt(token);
     }
 

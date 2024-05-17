@@ -2,10 +2,9 @@ class Main {
 	public static void main(String[] args) {
 		// Initialize the scanner with the input file
 		Scanner S = new Scanner(args[0]);
-
 		// Print the token stream
 		while (S.currentToken() != Core.EOS && S.currentToken() != Core.ERROR) {
-			// Pring the current token, with any extra data needed
+			// Print the current token, with any extra data needed
 			System.out.print(S.currentToken());
 			if (S.currentToken() == Core.ID) {
 				String value = S.getId();

@@ -3,8 +3,8 @@
 runner=$1
 
 echo "Attempting to compile java code..."
-javac *.java
-runner="java Main"
+javac.exe *.java
+runner="java.exe Main"
 
 score=0
 error=0
