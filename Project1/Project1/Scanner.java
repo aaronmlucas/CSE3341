@@ -21,7 +21,7 @@ class Scanner {
     // Advance to the next token
     public void nextToken() {
         assert (reader != null);
-        assert (reader.markSupported());
+        assert (reader.markSupported()); // These asserts should realistically always pass.
         // Reset the token
         token = "";
         try{
@@ -49,25 +49,25 @@ class Scanner {
                 return;
             }
             
-            // Begin reading and adding characters to the token
+            // Begin reading and adding characters to the token. Note: This is a really janky solution, but it works.
             boolean isConst = Character.isDigit(currentChar);
             while(currentChar != EOF && ((!isConst && Character.isLetter(currentChar)) || Character.isDigit(currentChar))){
                 token += currentChar;
                 reader.mark(2);
                 currentChar = (char) reader.read();
 
-                // Reset reader back to the previous character if the end of the token is reached.
+                // Reset reader back to the previous character if the next character is not a letter or digit.
                 if (!Character.isLetterOrDigit(currentChar)){
                     reader.reset();
                 }
             }
+            // This is for cases such as EOF or unrecognized symbols.
             if (token.length() == 0){
                 token += currentChar;
             }
         } catch (Exception IOException) {
             System.out.println("ERROR: Could not read from file.");
         }
-        
     }
 
     // Return the current token
@@ -144,11 +144,13 @@ class Scanner {
                 return Core.RBRACE;
             // Others
             default:
-                if (token.length() == 0 || token.charAt(0) == EOF){
+                // We can determine what the token is by the first character.
+                char firstChar = token.charAt(0);
+                if (token.length() == 0 || firstChar == EOF){
                     return Core.EOS;
-                } else if (Character.isDigit(token.charAt(0)) && Integer.parseInt(token) <= 99991) {
+                } else if (Character.isDigit(firstChar) && Integer.parseInt(token) <= 99991) {
                     return Core.CONST;
-                } else if (Character.isLetter(token.charAt(0))) {
+                } else if (Character.isLetter(firstChar)) {
                     return Core.ID;
                 } else{
                     System.out.println("ERROR: Invalid token: " + token);
@@ -159,12 +161,13 @@ class Scanner {
 
 	// Return the identifier string
     public String getId() {
+        assert token != null; // Realistically this should never be null, but just for good practice.
         return token;
     }
 
 	// Return the constant value
     public int getConst() {
-        //System.out.println(token.charAt(token.length()-1));
+        assert token != null; // Same with this.
         return Integer.parseInt(token);
     }
 
