@@ -1,5 +1,6 @@
+package Project1_Scanner;
 // This enum serves as our tokens
-enum Core {
+public enum Core {
     // Keywords
     AND,
     BEGIN,

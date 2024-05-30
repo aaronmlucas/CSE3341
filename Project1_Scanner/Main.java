@@ -1,3 +1,5 @@
+package Project1_Scanner;
+
 class Main {
 	public static void main(String[] args) {
 		// Initialize the scanner with the input file
