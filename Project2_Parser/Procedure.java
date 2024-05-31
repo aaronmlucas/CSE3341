@@ -1,5 +1,3 @@
-import Project1_Scanner.*;
-
 public class Procedure {
     private String procedureName;
     private DeclSeq ds;
@@ -11,6 +9,7 @@ public class Procedure {
     }
 
     public void parse(){
+        // Of the form  procedure ID is <decl-seq> begin <stmt-seq> end | procedure ID is begin <stmt-seq> end
         parser.expectedToken(Core.PROCEDURE);
         parser.scanner.nextToken();
 
