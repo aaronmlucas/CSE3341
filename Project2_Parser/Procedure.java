@@ -20,6 +20,7 @@ public class Procedure {
         parser.expectedToken(Core.IS);
         parser.scanner.nextToken();
 
+        // Check if there is a declaration sequence prior to the begin token
         if (parser.scanner.currentToken() != Core.BEGIN) {
             ds = new DeclSeq(parser);
             ds.parse();

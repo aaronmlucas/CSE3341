@@ -13,11 +13,13 @@ public class Expr {
         Core token = parser.scanner.currentToken();
         
         if (token == Core.ADD){
+            // <term> + <expr>
             parser.scanner.nextToken();
             Expr expr = new Expr(parser);
             expr.parse();
             strRep += " + " + expr.strRep;
         } else if (token == Core.SUBTRACT){
+            // <term> - <expr>
             parser.scanner.nextToken();
             Expr expr = new Expr(parser);
             expr.parse();

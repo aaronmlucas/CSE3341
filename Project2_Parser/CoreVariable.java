@@ -1,4 +1,3 @@
-
 public class CoreVariable {
     private String name;
     private Core type;

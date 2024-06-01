@@ -13,11 +13,13 @@ public class Term {
         Core token = parser.scanner.currentToken();
 
         if (token == Core.MULTIPLY){
+            // <factor> * <term>
             parser.scanner.nextToken();
             Term term = new Term(parser);
             term.parse();
             strRep += " * " + term.strRep;
         } else if (token == Core.DIVIDE){
+            // <factor> / <term>
             parser.scanner.nextToken();
             Term term = new Term(parser);
             term.parse();

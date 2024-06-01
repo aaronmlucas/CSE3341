@@ -11,12 +11,14 @@ public class Cond {
         Cond cond;
         switch(token){
             case Core.NOT:
+                // not <cond>
                 parser.scanner.nextToken();
                 cond = new Cond(parser);
                 cond.parse();
                 strRep += "not " + cond.strRep;
                 break;
             case Core.LBRACE:
+                // [ <cond> ]
                 parser.scanner.nextToken();
                 cond = new Cond(parser);
                 cond.parse();
@@ -49,11 +51,13 @@ public class Cond {
         strRep += expr.strRep;
         Core token = parser.scanner.currentToken();
         if (token == Core.EQUAL){
+            // <expr> == <expr>
             parser.scanner.nextToken();
             expr = new Expr(parser);
             expr.parse();
             strRep += " == " + expr.strRep;
         } else if (token == Core.LESS){
+            // <expr> < <expr>
             parser.scanner.nextToken();
             expr = new Expr(parser);
             expr.parse();

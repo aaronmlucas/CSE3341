@@ -102,7 +102,7 @@ public class Stmt {
                 parser.expectedToken(Core.ID);
                 String assigned = parser.scanner.getId();
                 strRep += " : " + assigned;
-                parser.stack.checkVariableType(assigned, Core.OBJECT);
+                parser.stack.checkVariableType(assigned, Core.OBJECT); // Assigned variable MUST be of type OBJECT
                 parser.scanner.nextToken();
                 parser.expectedToken(Core.SEMICOLON);
                 parser.scanner.nextToken();
@@ -127,6 +127,7 @@ public class Stmt {
         stmtSeq.parse();
         strRep += "if " + cond.strRep + " then\n" + stmtSeq.strRep;
         Core token = parser.scanner.currentToken();
+        // Check if there is an else statement
         if (token == Core.ELSE){
             // else <stmt-seq>
             parser.scanner.nextToken();
