@@ -1,53 +1,65 @@
 public class Stmt {
     private Parser parser;
-    public String strRep = ""; // The string representation of the statement. Used for printing.
     public Object child;
+    public Core stmtType;
     Stmt(Parser parser){
         this.parser = parser;
     }
     public void parse(){
-        Core token = parser.scanner.currentToken();
-        switch(token){
-            case Core.ID:
+        stmtType = parser.scanner.currentToken();
+        switch(stmtType){
+            case ID:
                 child = new Assignment(parser);
                 ((Assignment)child).parse();
-                strRep += ((Assignment)child).strRep;
                 break;
-            case Core.IF:
+            case IF:
                 child = new IfStmt(parser);
                 ((IfStmt)child).parse();
-                strRep += ((IfStmt)child).strRep;
                 break;
-            case Core.WHILE:
+            case WHILE:
                 child = new Loop(parser);
                 ((Loop)child).parse();
-                strRep += ((Loop)child).strRep;
                 break;
-            case Core.OUT:                   
+            case OUT:                   
                 child = new Out(parser);
                 ((Out)child).parse();
-                strRep += ((Out)child).strRep;
                 break;
-            case Core.INTEGER:
+            case INTEGER:
                 // Declaration of an integer variable
-                child = new Decl(parser);
-                ((Decl)child).parse();
-                strRep += ((Decl)child).strRep;
-                break;
-            case Core.OBJECT:
+            case OBJECT:
                 // Declaration of an object variable
                 child = new Decl(parser);
                 ((Decl)child).parse();
-                strRep += ((Decl)child).strRep;
                 break;
             default: 
                 // Error
-                System.out.println("ERROR: Invalid statement token: " + token);
+                System.out.println("ERROR: Invalid statement token: " + stmtType);
                 System.exit(0);
         }
     }
     public void print(){
-        System.out.println(strRep);
+        switch(stmtType){
+            case ID:
+                ((Assignment)child).print();
+                break;
+            case IF:
+                ((IfStmt)child).print();
+                break;
+            case WHILE:
+                ((Loop)child).print();
+                break;
+            case OUT:
+                ((Out)child).print();
+                break;
+            case INTEGER:
+            case OBJECT:
+                ((Decl)child).print();
+                break;
+            default:
+                // Error. I sure hope this never happens.
+                System.out.println("ERROR: Printing Error. Invalid statement token: " + stmtType);
+                System.exit(0);
+        }
     }
 
 }

@@ -1,6 +1,5 @@
 public class Cond {
     public Parser parser;
-    public String strRep = ""; // The string representation of the conditional. Used for printing.
     public Cmpr cmpr;
     public Cond cond;
     public Core modifier; // Maybe not the best name, but it determines the form the conditonal statement will take. IE 'not' | 'or' | 'and'
@@ -12,21 +11,19 @@ public class Cond {
         // Of the form:  <cmpr> | not <cond> | [ <cond> ] | <cmpr> or <cond> | <cmpr> and <cond>
         Core token = parser.scanner.currentToken();
         switch(token){
-            case Core.NOT:
+            case NOT:
                 // not <cond>
                 modifier = Core.NOT;
                 parser.scanner.nextToken();
                 cond = new Cond(parser);
                 cond.parse();
-                strRep += "not " + cond.strRep;
                 break;
-            case Core.LBRACE:
+            case LBRACE:
                 // [ <cond> ]
                 parser.scanner.nextToken();
                 cond = new Cond(parser);
                 cond.parse();
                 parser.scanner.nextToken();
-                strRep += "[" + cond.strRep + "]";
                 break;
             default:
                 // <cmpr> | <cmpr> or <cond> | <cmpr> and <cond>
@@ -38,18 +35,41 @@ public class Cond {
                     parser.scanner.nextToken();
                     cond = new Cond(parser);
                     cond.parse();
-                    strRep += " or " + cond.strRep;
                 } else if (token == Core.AND){
                     modifier = Core.AND;
                     parser.scanner.nextToken();
                     cond = new Cond(parser);
                     cond.parse();
-                    strRep += " and " + cond.strRep;
                 }
         }
     }
 
-    public class print(){
-        
+    public void print(){
+        if (cond != null){
+            if (modifier == Core.NOT){
+                // not <cond>
+                System.out.print("not ");
+                cond.print();
+            } else if (modifier == Core.OR){
+                // <cmpr> or <cond>
+                cmpr.print();
+                System.out.print(" or ");
+                cond.print();
+            } else if (modifier == Core.AND){
+                // <cmpr> and <cond>
+                cmpr.print();
+                System.out.print(" and ");
+                cond.print();
+            } else { // If we wanted to be extra safe, this could also be modifier == null
+                // '[ <cond> ]' is the only case with a condition and no modifier.
+                System.out.print("[");
+                cond.print();
+                System.out.print("]");
+            }
+
+        } else{
+            // <cmpr> is the only case without a conditional statement.
+            cmpr.print();
+        }
     }
 }

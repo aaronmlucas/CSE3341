@@ -1,8 +1,7 @@
-public class Loop(){
+public class Loop{
     private Parser parser;
     private Cond cond;
     private StmtSeq ss;
-    public String strRep = ""; // The string representation of the loop statement. Used for printing.
 
     Loop(Parser parser){
         this.parser = parser;
@@ -20,10 +19,13 @@ public class Loop(){
         ss.parse();
         parser.expectedToken(Core.END);
         parser.scanner.nextToken();
-        strRep += "while " + cond.strRep + " do\n" + ss.strRep + "\n\tend";
     }
 
     public void print(){
-        System.out.println(strRep);
+        System.out.print("while ");
+        cond.print();
+        System.out.println(" do");
+        ss.print();
+        System.out.println("end");
     }
 }

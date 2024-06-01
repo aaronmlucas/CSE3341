@@ -1,27 +1,36 @@
-public class Assignment(){
+public class Assignment{
     public Parser parser;
     public Expr expr;
+    public String id1;
+    public String id2;
+    public boolean isArray = false;
     Assignment(Parser parser){
         this.parser = parser;
     }
 
-    private void parse(){
+    public void parse(){
         // Of the form 'id = <expr> ;' | 'id [ id ] = <expr> ;' | 'id = new object( id, <expr> );' | 'id : id ;'
         parser.expectedToken(Core.ID); // Redundancy.
-        String assignee = parser.scanner.getId();
-        parser.stack.containsId(assignee);
-        strRep += parser.scanner.getId();
+        id1 = parser.scanner.getId();
+        parser.stack.containsId(id1);
         parser.scanner.nextToken();
         Core token = parser.scanner.currentToken();
         switch(token){
-            case Core.ASSIGN:
+            case ASSIGN:
                 parser.scanner.nextToken();
-                parser.scanner.currentToken() == Core.NEW ? parseNewObject() : parseStandardVariable();
+                if (parser.scanner.currentToken() == Core.NEW){
+                    // id = new object ( id , <expr> ) ;
+                    parseNewObject();
+                } else {
+                    // id = <expr> ;
+                    parseStandardVariable();
+                }
                 break;
-            case Core.LBRACE:
+            case LBRACE:
+                isArray = true;
                 parseArray();
                 break;
-            case Core.COLON:
+            case COLON:
                 parseColon();
                 break;
             default:
@@ -33,7 +42,29 @@ public class Assignment(){
     }
 
     public void print(){
-        System.out.println(strRep);
+        if (expr != null){
+            if (id2 != null){
+                if (isArray){
+                    // 'id [ id ] = <expr> ;' is an array assignment. Noted by the isArray flag.
+                    System.out.print(id1 + "[" + id2 + "] = ");
+                    expr.print();
+                    System.out.println(";");
+                } else{
+                    // 'id = new object( id, <expr> );' is the only case left.
+                    System.out.print(id1 + " = new object( " + id2 + ", ");
+                    expr.print();
+                    System.out.println(");");
+                }
+            } else{
+                // 'id = <expr> ;' is the only case with without an id2.
+                System.out.print(id1 + " = ");
+                expr.print();
+                System.out.println(";");
+            }   
+        } else{
+            // 'id : id ;' is the only case without an expression.
+            System.out.println(id1 + " : " + id2 + " ;");
+        }
     }
 
     // ------------------- Helper Methods ------------------- //
@@ -42,21 +73,19 @@ public class Assignment(){
         // Of the form 'id = <expr> ;'
         expr = new Expr(parser);
         expr.parse();
-        strRep += "=" + expr.strRep;
         parser.expectedToken(Core.SEMICOLON);
         parser.scanner.nextToken();
-        strRep += ";";
     }
     private void parseNewObject(){
         // Of the form 'new object( id, <expr> );'
-        parser.stack.checkVariableType(assignee, Core.OBJECT); // Assignee variable MUST be of type OBJECT
+        parser.stack.checkVariableType(id1, Core.OBJECT); // Assignee variable MUST be of type OBJECT
         parser.scanner.nextToken();
         parser.expectedToken(Core.OBJECT);
         parser.scanner.nextToken();
         parser.expectedToken(Core.LPAREN);
         parser.scanner.nextToken();
         parser.expectedToken(Core.ID);
-        strRep += "=new object(" + parser.scanner.getId();
+        id2 = parser.scanner.getId();
         parser.scanner.nextToken();
         parser.expectedToken(Core.COMMA);
         parser.scanner.nextToken();
@@ -64,17 +93,15 @@ public class Assignment(){
         expr.parse();
         parser.expectedToken(Core.RPAREN);
         parser.scanner.nextToken();  
-        strRep += ", " + expr.strRep + ")";
         parser.expectedToken(Core.SEMICOLON);
         parser.scanner.nextToken();
-        strRep += ";";
     }
     private void parseArray(){
         // Of the form '[ id ] = <expr> ;'
-        parser.stack.checkVariableType(assignee, Core.OBJECT); // Assignee variable MUST be of type OBJECT
+        parser.stack.checkVariableType(id1, Core.OBJECT); // Assignee variable MUST be of type OBJECT
         parser.scanner.nextToken();
         parser.expectedToken(Core.ID);
-        strRep += "[" + parser.scanner.getId();
+        id2 = parser.scanner.getId();
         parser.scanner.nextToken();
         parser.expectedToken(Core.RBRACE);
         parser.scanner.nextToken();
@@ -84,19 +111,16 @@ public class Assignment(){
         expr.parse();
         parser.expectedToken(Core.SEMICOLON);
         parser.scanner.nextToken();
-        strRep += "] = " + expr.strRep + ";";
     }
     private void parseColon(){
         // Of the form ': id ;'
-        parser.stack.checkVariableType(assignee, Core.OBJECT); // Assignee variable MUST be of type OBJECT
+        parser.stack.checkVariableType(id1, Core.OBJECT); // Assignee variable MUST be of type OBJECT
         parser.scanner.nextToken();
         parser.expectedToken(Core.ID);
-        String assigned = parser.scanner.getId();
-        strRep += " : " + assigned;
-        parser.stack.checkVariableType(assigned, Core.OBJECT); // Assigned variable MUST be of type OBJECT
+        id2 = parser.scanner.getId();
+        parser.stack.checkVariableType(id2, Core.OBJECT); // Assigned variable MUST be of type OBJECT
         parser.scanner.nextToken();
         parser.expectedToken(Core.SEMICOLON);
         parser.scanner.nextToken();
-        strRep += ";";
     }
 }

@@ -1,6 +1,6 @@
 public class Factor {
     private Parser parser;
-    public String strRep = ""; // The string representation of the factor. Used for printing.
+    public String terminal = ""; // The string representation of the terminals. Used for printing.
     public Expr expr;
     Factor(Parser parser){
         this.parser = parser;
@@ -9,40 +9,39 @@ public class Factor {
         // Of the id | id [id] | const | ( <expr> ) | in ()
         Core token = parser.scanner.currentToken();
         switch (token){
-            case Core.ID:
+            case ID:
                 // id | id [id]
-                strRep += parser.scanner.getId();
+                terminal += parser.scanner.getId();
                 parser.stack.containsId(parser.scanner.getId()); // Check if the variable has been declared
                 parser.scanner.nextToken();
                 if (parser.scanner.currentToken() == Core.LBRACE){
                     parser.scanner.nextToken();
                     parser.expectedToken(Core.ID);
-                    strRep += "[" + parser.scanner.getId() + "]";
+                    terminal += "[" + parser.scanner.getId() + "]";
                     parser.scanner.nextToken();
                     parser.expectedToken(Core.RBRACE);
                     parser.scanner.nextToken();
                 }
                 break;
-            case Core.CONST:
-                strRep += parser.scanner.getConst();
+            case CONST:
+                terminal += parser.scanner.getConst();
                 parser.scanner.nextToken();
                 break;
-            case Core.LPAREN:
+            case LPAREN:
                 // ( <expr> )
                 parser.scanner.nextToken();
                 expr = new Expr(parser);
                 expr.parse();
                 parser.expectedToken(Core.RPAREN);
                 parser.scanner.nextToken();
-                strRep += "(" + expr.strRep + ")";
                 break;
-            case Core.IN:
+            case IN:
                 // in ()
                 parser.scanner.nextToken();
                 parser.expectedToken(Core.LPAREN);
                 parser.scanner.nextToken();
                 parser.expectedToken(Core.RPAREN);
-                strRep += "in()";
+                terminal += "in()";
                 parser.scanner.nextToken();
                 break;
             default:
@@ -52,6 +51,12 @@ public class Factor {
         }
     }
     public void print(){
-        System.out.print(strRep);
+        if (expr != null){
+            System.out.print("(");
+            expr.print();
+            System.out.print(")");
+        } else {
+            System.out.print(terminal);
+        }
     }
 }

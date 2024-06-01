@@ -4,7 +4,6 @@ import java.util.ArrayList;
 public class StmtSeq {
     private List<Stmt> stmts;
     private Parser parser;
-    public String strRep = ""; // The string representation of the statement sequence. Used for printing.
 
     StmtSeq(Parser parser){
         this.parser = parser;
@@ -18,13 +17,13 @@ public class StmtSeq {
             newStmt = new Stmt(parser);
             newStmt.parse();
             stmts.add(newStmt);
-            strRep += "\t" + newStmt.strRep + "\n";
         }
-        strRep = strRep.substring(0, strRep.length() - 1); // Remove the last newline character
     }
 
     public void print(){
-        System.out.println(strRep);
+        for (Stmt stmt : stmts){
+            stmt.print();
+        }
     }
 
 }

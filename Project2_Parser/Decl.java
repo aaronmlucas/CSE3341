@@ -2,7 +2,6 @@ public class Decl {
     private Parser parser;
     private Core varType;
     private String varName;
-    public String strRep = ""; // The string representation of the declaration. Used for printing.
     
     Decl(Parser parser){
         this.parser = parser;
@@ -21,14 +20,13 @@ public class Decl {
         }
         parser.expectedToken(Core.SEMICOLON);
         parser.scanner.nextToken();
-        strRep = varType.toString().toLowerCase() + " " + varName + ";";
         // Checking if the variable has already been declared, if not, push it to the stack.
         parser.stack.doesNotContainId(varName);
         parser.stack.push(varName, varType);
     }
 
     public void print(){
-        System.out.println(strRep);
+        System.out.println(varType.toString().toLowerCase() + " " + varName + ";");
     }
 
     // ------------------- Helper Methods ------------------- //

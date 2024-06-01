@@ -1,7 +1,6 @@
-public class Out(){
+public class Out{
     private Parser parser;
     private Expr expr;
-    public String strRep = ""; // The string representation of the out statement. Used for printing.
 
     Out(Parser parser){
         this.parser = parser;
@@ -19,10 +18,11 @@ public class Out(){
         parser.scanner.nextToken();
         parser.expectedToken(Core.SEMICOLON);
         parser.scanner.nextToken();
-        strRep += "out(" + expr.strRep + ");";
     }
 
     public void print(){
-        System.out.println(strRep);
+        System.out.print("out (");
+        expr.print();
+        System.out.println(");");
     }
 }
