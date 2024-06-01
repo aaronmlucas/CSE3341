@@ -2,7 +2,7 @@ public class Term {
     private Parser parser;
     public Factor factor;
     public Term term;
-    public Core sign;
+    public char sign;
     Term(Parser parser){
         this.parser = parser;
     }
@@ -15,13 +15,13 @@ public class Term {
 
         if (token == Core.MULTIPLY){
             // <factor> * <term>
-            sign = token;
+            sign = '*';
             parser.scanner.nextToken();
             term = new Term(parser);
             term.parse();
         } else if (token == Core.DIVIDE){
             // <factor> / <term>
-            sign = token;
+            sign = '/';
             parser.scanner.nextToken();
             term = new Term(parser);
             term.parse();

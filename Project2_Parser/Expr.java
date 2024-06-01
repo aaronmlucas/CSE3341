@@ -2,7 +2,7 @@ public class Expr {
     private Parser parser;
     public Term term;
     public Expr expr;
-    public Core sign;
+    public char sign;
     Expr(Parser parser){
         this.parser = parser;
     }
@@ -15,13 +15,13 @@ public class Expr {
         
         if (token == Core.ADD){
             // <term> + <expr>
-            sign = token;
+            sign = '+';
             parser.scanner.nextToken();
             expr = new Expr(parser);
             expr.parse();
         } else if (token == Core.SUBTRACT){
             // <term> - <expr>
-            sign = token;
+            sign = '-';
             parser.scanner.nextToken();
             expr = new Expr(parser);
             expr.parse();
