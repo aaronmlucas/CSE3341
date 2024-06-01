@@ -1,6 +1,7 @@
 public class Stmt {
     private Parser parser;
     public String strRep = ""; // The string representation of the statement. Used for printing.
+    public Object child;
     Stmt(Parser parser){
         this.parser = parser;
     }
@@ -8,24 +9,36 @@ public class Stmt {
         Core token = parser.scanner.currentToken();
         switch(token){
             case Core.ID:
-                parseAssignment();
+                child = new Assignment(parser);
+                ((Assignment)child).parse();
+                strRep += ((Assignment)child).strRep;
                 break;
             case Core.IF:
-                parseIf();
+                child = new IfStmt(parser);
+                ((IfStmt)child).parse();
+                strRep += ((IfStmt)child).strRep;
                 break;
             case Core.WHILE:
-                parseLoop();
+                child = new Loop(parser);
+                ((Loop)child).parse();
+                strRep += ((Loop)child).strRep;
                 break;
             case Core.OUT:                   
-                parseOut();
+                child = new Out(parser);
+                ((Out)child).parse();
+                strRep += ((Out)child).strRep;
                 break;
             case Core.INTEGER:
                 // Declaration of an integer variable
-                parseDecl();
+                child = new Decl(parser);
+                ((Decl)child).parse();
+                strRep += ((Decl)child).strRep;
                 break;
             case Core.OBJECT:
                 // Declaration of an object variable
-                parseDecl();
+                child = new Decl(parser);
+                ((Decl)child).parse();
+                strRep += ((Decl)child).strRep;
                 break;
             default: 
                 // Error
@@ -37,139 +50,4 @@ public class Stmt {
         System.out.println(strRep);
     }
 
-    // ------------------- Helper Methods ------------------- //
-    // These may be better in their own separate classes but ¯\_(ツ)_/¯
-    private void parseAssignment(){
-        // Of the form 'id = <expr> ;' | 'id [ id ] = <expr> ;' | 'id = new object( id, <expr> );' | 'id : id ;'
-        parser.expectedToken(Core.ID); // Redundancy.
-        String assignee = parser.scanner.getId();
-        parser.stack.containsId(assignee);
-        strRep += parser.scanner.getId();
-        parser.scanner.nextToken();
-        Core token = parser.scanner.currentToken();
-        switch(token){
-            case Core.ASSIGN:
-                parser.scanner.nextToken();
-                if (parser.scanner.currentToken() == Core.NEW){
-                    // Of the form 'new object( id, <expr> );'
-                    parser.stack.checkVariableType(assignee, Core.OBJECT); // Assignee variable MUST be of type OBJECT
-                    parser.scanner.nextToken();
-                    parser.expectedToken(Core.OBJECT);
-                    parser.scanner.nextToken();
-                    parser.expectedToken(Core.LPAREN);
-                    parser.scanner.nextToken();
-                    parser.expectedToken(Core.ID);
-                    strRep += "=new object(" + parser.scanner.getId();
-                    parser.scanner.nextToken();
-                    parser.expectedToken(Core.COMMA);
-                    parser.scanner.nextToken();
-                    Expr expr = new Expr(parser);
-                    expr.parse();
-                    parser.expectedToken(Core.RPAREN);
-                    parser.scanner.nextToken();  
-                    strRep += ", " + expr.strRep + ")";     
-                } else {
-                    // Of the form 'id = <expr> ;'
-                    Expr expr = new Expr(parser);
-                    expr.parse();
-                    strRep += "=" + expr.strRep;
-                }
-                parser.expectedToken(Core.SEMICOLON);
-                parser.scanner.nextToken();
-                strRep += ";";
-                break;
-            case Core.LBRACE:
-                // Of the form '[ id ] = <expr> ;'
-                parser.stack.checkVariableType(assignee, Core.OBJECT); // Assignee variable MUST be of type OBJECT
-                parser.scanner.nextToken();
-                parser.expectedToken(Core.ID);
-                strRep += "[" + parser.scanner.getId();
-                parser.scanner.nextToken();
-                parser.expectedToken(Core.RBRACE);
-                parser.scanner.nextToken();
-                parser.expectedToken(Core.ASSIGN);
-                parser.scanner.nextToken();
-                Expr expr = new Expr(parser);
-                expr.parse();
-                parser.expectedToken(Core.SEMICOLON);
-                parser.scanner.nextToken();
-                strRep += "] = " + expr.strRep + ";";
-                break;
-            case Core.COLON:
-                // Of the form ': id ;'
-                parser.stack.checkVariableType(assignee, Core.OBJECT); // Assignee variable MUST be of type OBJECT
-                parser.scanner.nextToken();
-                parser.expectedToken(Core.ID);
-                String assigned = parser.scanner.getId();
-                strRep += " : " + assigned;
-                parser.stack.checkVariableType(assigned, Core.OBJECT); // Assigned variable MUST be of type OBJECT
-                parser.scanner.nextToken();
-                parser.expectedToken(Core.SEMICOLON);
-                parser.scanner.nextToken();
-                strRep += ";";
-                break;
-            default:
-                // Error
-                System.out.println("ERROR: Invalid assignment token: " + token);
-                System.exit(0);
-        }
-
-    }
-    private void parseIf(){
-        // Of the form 'if <cond> then <stmt-seq> end' | 'if <cond> then <stmt-seq> else <stmt-seq> end'
-        parser.expectedToken(Core.IF); // Redundancy.
-        parser.scanner.nextToken();
-        Cond cond = new Cond(parser);
-        cond.parse();
-        parser.expectedToken(Core.THEN);
-        parser.scanner.nextToken();
-        StmtSeq stmtSeq = new StmtSeq(parser);
-        stmtSeq.parse();
-        strRep += "if " + cond.strRep + " then\n" + stmtSeq.strRep;
-        Core token = parser.scanner.currentToken();
-        // Check if there is an else statement
-        if (token == Core.ELSE){
-            // else <stmt-seq>
-            parser.scanner.nextToken();
-            stmtSeq = new StmtSeq(parser);
-            stmtSeq.parse();
-            strRep += " else " + stmtSeq.strRep;
-        }
-        parser.expectedToken(Core.END);
-        parser.scanner.nextToken();
-        strRep += "\n\tend";
-    }
-    private void parseLoop(){
-        // Of the form 'while <cond> do <stmt-seq> end'
-        parser.expectedToken(Core.WHILE); // Redundancy.
-        parser.scanner.nextToken();
-        Cond cond = new Cond(parser);
-        cond.parse();
-        parser.expectedToken(Core.DO);
-        parser.scanner.nextToken();
-        StmtSeq stmtSeq = new StmtSeq(parser);
-        stmtSeq.parse();
-        parser.expectedToken(Core.END);
-        parser.scanner.nextToken();
-        strRep += "while " + cond.strRep + " do\n" + stmtSeq.strRep + "\n\tend";
-    }
-    private void parseOut(){
-        // Of the form 'out ( <expr> ) ;'
-        parser.expectedToken(Core.OUT); // Redundancy.
-        parser.scanner.nextToken();
-        parser.expectedToken(Core.LPAREN);
-        parser.scanner.nextToken();
-        Expr expr = new Expr(parser);
-        expr.parse();
-        parser.expectedToken(Core.RPAREN);
-        parser.scanner.nextToken();
-        parser.expectedToken(Core.SEMICOLON);
-        parser.scanner.nextToken();
-        strRep += "out(" + expr.strRep + ");";
-    }
-    private void parseDecl(){
-        Decl newDecl = new Decl(parser);
-        newDecl.parse();
-        strRep += newDecl.strRep;
-    }
 }

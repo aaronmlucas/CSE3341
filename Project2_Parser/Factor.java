@@ -1,6 +1,7 @@
 public class Factor {
     private Parser parser;
     public String strRep = ""; // The string representation of the factor. Used for printing.
+    public Expr expr;
     Factor(Parser parser){
         this.parser = parser;
     }
@@ -29,7 +30,7 @@ public class Factor {
             case Core.LPAREN:
                 // ( <expr> )
                 parser.scanner.nextToken();
-                Expr expr = new Expr(parser);
+                expr = new Expr(parser);
                 expr.parse();
                 parser.expectedToken(Core.RPAREN);
                 parser.scanner.nextToken();
