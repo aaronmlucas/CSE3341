@@ -42,6 +42,8 @@ public class Stmt {
     private void parseAssignment(){
         // Of the form 'id = <expr> ;' | 'id [ id ] = <expr> ;' | 'id = new object( id, <expr> );' | 'id : id ;'
         parser.expectedToken(Core.ID); // Redundancy.
+        String assignee = parser.scanner.getId();
+        parser.stack.containsId(assignee);
         strRep += parser.scanner.getId();
         parser.scanner.nextToken();
         Core token = parser.scanner.currentToken();
@@ -49,7 +51,8 @@ public class Stmt {
             case Core.ASSIGN:
                 parser.scanner.nextToken();
                 if (parser.scanner.currentToken() == Core.NEW){
-                    // Of the form 'id = new object( id, <expr> );'
+                    // Of the form 'new object( id, <expr> );'
+                    parser.stack.checkVariableType(assignee, Core.OBJECT); // Assignee variable MUST be of type OBJECT
                     parser.scanner.nextToken();
                     parser.expectedToken(Core.OBJECT);
                     parser.scanner.nextToken();
@@ -76,7 +79,8 @@ public class Stmt {
                 strRep += ";";
                 break;
             case Core.LBRACE:
-                // Of the form 'id [ id ] = <expr> ;'
+                // Of the form '[ id ] = <expr> ;'
+                parser.stack.checkVariableType(assignee, Core.OBJECT); // Assignee variable MUST be of type OBJECT
                 parser.scanner.nextToken();
                 parser.expectedToken(Core.ID);
                 strRep += "[" + parser.scanner.getId();
@@ -92,10 +96,13 @@ public class Stmt {
                 strRep += "] = " + expr.strRep + ";";
                 break;
             case Core.COLON:
-                // Of the form 'id : id ;'
+                // Of the form ': id ;'
+                parser.stack.checkVariableType(assignee, Core.OBJECT); // Assignee variable MUST be of type OBJECT
                 parser.scanner.nextToken();
                 parser.expectedToken(Core.ID);
-                strRep += " : " + parser.scanner.getId();
+                String assigned = parser.scanner.getId();
+                strRep += " : " + assigned;
+                parser.stack.checkVariableType(assigned, Core.OBJECT);
                 parser.scanner.nextToken();
                 parser.expectedToken(Core.SEMICOLON);
                 parser.scanner.nextToken();

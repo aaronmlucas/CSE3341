@@ -1,6 +1,7 @@
 public class Parser {
     Scanner scanner;
     Procedure procedure;
+    ProgramStack stack = new ProgramStack();
 
     Parser(Scanner scanner) {
         this.scanner = scanner;

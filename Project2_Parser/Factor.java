@@ -11,6 +11,7 @@ public class Factor {
             case Core.ID:
                 // id | id [id]
                 strRep += parser.scanner.getId();
+                parser.stack.containsId(parser.scanner.getId());
                 parser.scanner.nextToken();
                 if (parser.scanner.currentToken() == Core.LBRACE){
                     parser.scanner.nextToken();

@@ -20,7 +20,8 @@ public class Decl {
         parser.expectedToken(Core.SEMICOLON);
         parser.scanner.nextToken();
         strRep = varType.toString().toLowerCase() + " " + varName + ";";
-
+        parser.stack.doesNotContainId(varName);
+        parser.stack.push(varName, varType);
     }
 
     public void print(){
