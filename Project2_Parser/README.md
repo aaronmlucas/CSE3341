@@ -45,13 +45,24 @@ Error (Directory)
 
 **Stmt.java** - The class representing the various different statements in the Core language. Including assignments, if-statements, loops, output-statements, and declarations. This is the underrated character.
 
+**Assignment.java** - The class representing assignments in the Core language.
+
+**IfStmt.java** - The class representing if-statements in the Core language.
+
+**Loop.java** - The class representing loops in the Core language.
+
+**Out.java** - The class representing output statements in the Core language.
+
 **Cond.java** - The class representing conditionals in the Core language.
+
+**Cmpr.java** -  The class representing the comparisons in the Core language.
 
 **Expr.java** - The class representing expressions in the Core language.
 
 **Term.java** - The class representing terms in the Core language.
 
 **Factor.java** - The class representing factors in the Core language.
+
 
 *For more info on the Core language, please see the final page of the "3341 Project 2.pdf" file.*
 
