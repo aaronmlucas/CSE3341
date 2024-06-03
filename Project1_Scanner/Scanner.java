@@ -1,13 +1,15 @@
+package Project1_Scanner;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
-class Scanner {
+public class Scanner {
 
     public BufferedReader reader;
     private final char EOF = (char) -1;
     private String token = "";
     private String symbols = "+-*/=<>:;.,()[]" + EOF;
     // Initialize the scanner
-    Scanner(String filename) {
+    public Scanner(String filename) {
         try {
             // A buffered reader is chosen here to reduce the number of reads from the secondary storage medium. 
             // Memory access is faster than disk access.
