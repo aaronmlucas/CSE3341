@@ -1,0 +1,6 @@
+procedure e03 is
+	object x;
+begin
+	x = new object(default, 5);
+	x = z[test];
+end

@@ -1,0 +1,19 @@
+procedure c28 is
+	object x;
+begin
+	x = new object(a0, 4);
+	x[a0] = 1;
+	if x[a0] == x[a0] then
+		x[a1] = 2;
+		if x[a1] == x[a1] then
+			x[a2] = 3;
+			if x[a2] == x[a2] then
+				x[a3] = 4;
+				out(x[a3]);
+			end
+			out(x[a2]);
+		end
+		out(x[a1]);
+	end
+	out(x[a0]);
+end
