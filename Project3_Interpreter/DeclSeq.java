@@ -27,10 +27,6 @@ public class DeclSeq {
 
     public void execute(){
         parser.stack.newBlock();
-        for (Decl decl : decls){
-            CoreVariable var = decl.execute();
-            // Adds the variable as a pair (<String name -> CoreVariable var>) to the new block in the stack
-            parser.stack.addVariable(var.getName(), var); 
-        }
+        for (Decl decl : decls) decl.execute(); // Just found out you could do this in Java. Pretty nifty.
     }
 }

@@ -59,11 +59,14 @@ public class Decl {
             System.out.println("ERROR: variable " + varName + " has already been declared.");
             System.exit(0);
         }else{
+            // Adds the variable as a pair (<String name -> CoreVariable var>) to the new block in the stack
+            CoreVariable var;
             if (varType == Core.INTEGER){
-                return new CoreInteger(varName);
-            } else if (varType == Core.OBJECT){
-                return new CoreObject(varName);
+                var = new CoreInteger(varName);
+            } else {
+                var = new CoreObject(varName);
             }
+            parser.stack.addVariable(varName, var);
         }
         return null;
     }

@@ -72,11 +72,15 @@ public class Factor {
                     System.exit(0);
                 }
                 //Note: We are assuming that the input file is in the form specified in the assignment.
-                int token = (int) parser.fileInput.getConst();
+                int token = parser.fileInput.getConst();
                 parser.fileInput.nextToken();
                 return token;
             
             } else if (terminal.contains("[")){
+                if (!parser.stack.containsVariable(id1)){
+                    System.out.println("ERROR: Variable " + id1 + " not found.");
+                    System.exit(0);
+                }
                 return parser.stack.getVariable(id1).getValue(id2);
             } else{
                 // Either id or const

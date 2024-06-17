@@ -38,13 +38,14 @@ public class Term {
             factor.print();
         }
     }
+
     public int execute(){
         if (term != null){
             if (sign == '*'){
                 return factor.execute() * term.execute();
             } else {
                 int divisor = term.execute();
-                if (term.execute() == 0){
+                if (divisor == 0){
                     System.out.println("ERROR: Division by zero");
                     System.exit(0);
                 }

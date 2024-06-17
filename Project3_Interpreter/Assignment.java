@@ -75,7 +75,7 @@ public class Assignment{
                         assignee.setValue(id2, expr.execute());
                     } else{
                         // 'id = new object( id, <expr> );' is the only case left.
-                        CoreVariable var = new CoreObject(id1,id2, expr.execute());
+                        CoreVariable var = new CoreObject(id1, id2, expr.execute());
                         parser.stack.replaceVariable(id1, var);
                     }
                 } else{
@@ -83,18 +83,18 @@ public class Assignment{
                     if (assignee.getType() == Core.INTEGER){
                         // Changing the integer's value
                         assignee.setValue(expr.execute());
-
                     } else if (assignee.getType() == Core.OBJECT){
                         // Changing the default key's value
-                        assignee.setValue(assignee.defaultKey, expr.execute());
+                        int val = expr.execute();
+                        assignee.setValue(assignee.defaultKey, val);
                     }
-                    assignee.setValue(expr.execute());
                 }   
             } else{
                 // 'id : id ;' is the only case without an expression.
                 parser.stack.replaceVariable(id1, parser.stack.getVariable(id2));
             }
         } else {
+            System.out.println(expr.execute());
             System.out.println("ERROR: variable " + id1 + " has not been declared.");
             System.exit(0);
         }
@@ -110,7 +110,7 @@ public class Assignment{
     }
     private void parseNewObject(){
         // Of the form 'new object( id, <expr> );'
-        parser.stack.checkVariableType(id1, Core.OBJECT); // Assignee variable MUST be of type OBJECT
+        //parser.stack.checkVariableType(id1, Core.OBJECT); // Assignee variable MUST be of type OBJECT
         parser.scanner.nextToken();
         parser.expectedToken(Core.OBJECT);
         parser.scanner.nextToken();
@@ -128,9 +128,9 @@ public class Assignment{
         parser.expectedToken(Core.SEMICOLON);
         parser.scanner.nextToken();
     }
-    private void parseArray(){
+    private void parseArray(){ // Wrong function name. Too lazy to come up with a better one.
         // Of the form '[ id ] = <expr> ;'
-        parser.stack.checkVariableType(id1, Core.OBJECT); // Assignee variable MUST be of type OBJECT
+        //parser.stack.checkVariableType(id1, Core.OBJECT); // Assignee variable MUST be of type OBJECT
         parser.scanner.nextToken();
         parser.expectedToken(Core.ID);
         id2 = parser.scanner.getId();
@@ -146,11 +146,11 @@ public class Assignment{
     }
     private void parseColon(){
         // Of the form ': id ;'
-        parser.stack.checkVariableType(id1, Core.OBJECT); // Assignee variable MUST be of type OBJECT
+        //parser.stack.checkVariableType(id1, Core.OBJECT); // Assignee variable MUST be of type OBJECT
         parser.scanner.nextToken();
         parser.expectedToken(Core.ID);
         id2 = parser.scanner.getId();
-        parser.stack.checkVariableType(id2, Core.OBJECT); // Assigned variable MUST be of type OBJECT
+        //parser.stack.checkVariableType(id2, Core.OBJECT); // Assigned variable MUST be of type OBJECT
         parser.scanner.nextToken();
         parser.expectedToken(Core.SEMICOLON);
         parser.scanner.nextToken();

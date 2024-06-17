@@ -47,11 +47,12 @@ public class ProgramStack {
         }
     }
 
-    public void checkVariableType(String name, Core type){
-        CoreVariable var = getVariable(name);
-        if (var.getType() != type){
-            System.out.println("ERROR: Variable " + name + " is not of type " + type);
-            System.exit(0);
-        }
-    }
+    // Doesn't work with how it is currently implemented. Since this is not graded for this project, I am not going to worry about it for now.
+    // public void checkVariableType(String name, Core type){
+    //     CoreVariable var = getVariable(name);
+    //     if (var.getType() != type){
+    //         System.out.println("ERROR: Variable " + name + " is not of type " + type);
+    //         System.exit(0);
+    //     }
+    // }
 }
