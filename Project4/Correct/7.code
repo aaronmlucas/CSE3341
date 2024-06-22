@@ -1,0 +1,15 @@
+procedure c7 is
+	procedure A ( r ) is 
+		r = 9;
+	end
+	procedure B ( s ) is
+		s = 7;
+		begin A(s);
+	end
+begin
+	object q;
+	q = new object(default, 1);
+	q = 5;
+	begin B(q);
+	out(q);
+end
