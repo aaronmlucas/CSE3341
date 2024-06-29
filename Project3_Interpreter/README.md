@@ -3,7 +3,7 @@ Principles of Programming Languages
 
 ## Name: Aaron Lucas
 
-This zip contains the second project for CSE 3341. In this project, I was tasked with creating an interpreter for the same fictional language (Core) used in project 1 and 2. This project is built on top of the work produced in Project 1 and 2. As such, a couple files are borrowed from it and are included in this zip. Similar to the previous project, many files were provided by the instructor which were *mostly* unedited.
+This zip contains the third project for CSE 3341. In this project, I was tasked with creating an interpreter for the same fictional language (Core) used in project 1 and 2. This project is built on top of the work produced in Project 1 and 2. As such, a couple files are borrowed from it and are included in this zip. Similar to the previous project, many files were provided by the instructor which were *mostly* unedited.
 
 ## The files provided or borrowed from previous projects
 
