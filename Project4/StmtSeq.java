@@ -12,7 +12,7 @@ public class StmtSeq {
     
     public void parse(){
         Stmt newStmt;
-        // Can be assignment, if statement, loop statement, out(put?), or declaration
+        // Can be assignment, if statement, loop statement, output, or declaration
         while (parser.scanner.currentToken() != Core.END && parser.scanner.currentToken() != Core.ELSE){
             newStmt = new Stmt(parser);
             newStmt.parse();

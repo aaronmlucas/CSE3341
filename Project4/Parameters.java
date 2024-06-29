@@ -2,10 +2,11 @@ import java.util.List;
 
 public class Parameters{
     private final Parser parser;
-    private List<String> paramNames;
+    public final List<String> paramNames;
     
     public Parameters(Parser parser){
         this.parser = parser;
+        this.paramNames = new java.util.ArrayList<>();
     }
 
     public void parse(){
@@ -33,7 +34,16 @@ public class Parameters{
         }
     }
 
-    public void execute(){
+    // Arguments are parameter values passed by the caller. This acts as Parameters' 'execute' method.
+    public void loadValues(Parameters passedValues){
+        if (passedValues.paramNames.size() != paramNames.size()){
+            System.out.println("ERROR: Number of parameters passed does not match number of parameters expected.");
+            System.exit(0);
+        }
+        for (int i = 0; i < passedValues.paramNames.size(); i++) {
+            CoreVariable var = parser.stack.getVariable(passedValues.paramNames.get(i)); // Find the value of the passed in variable.
+            parser.stack.addVariable(paramNames.get(i), var);  
+        }
 
     }
 }

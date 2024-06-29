@@ -31,6 +31,12 @@ public class Function{
 
         parser.expectedToken(Core.END);
         parser.scanner.nextToken();
+
+        if (parser.stack.functions.containsKey(functionName)){
+            System.out.println("ERROR: Function " + functionName + " already exists.");
+            System.exit(0);
+        }
+        parser.stack.functions.put(functionName, this);
     }
 
     public void print(){
@@ -41,7 +47,8 @@ public class Function{
         System.out.println("end");
     }
 
-    public void execute(){
-
+    public void execute(Parameters passedValues){
+        parameters.loadValues(passedValues); // Set the parameters to the values passed by the caller
+        ss.execute(); // Execute the function's statements
     }
 }

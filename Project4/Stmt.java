@@ -48,6 +48,7 @@ public class Stmt {
             case WHILE -> ((Loop)child).print();
             case OUT -> ((Out)child).print();
             case INTEGER, OBJECT -> ((Decl)child).print();
+            case BEGIN -> ((Call)child).print();
             default -> {
                 // Error. I sure hope this never happens.
                 System.out.println("ERROR: Printing Error. Invalid statement token: " + stmtType);
@@ -62,6 +63,7 @@ public class Stmt {
             case WHILE -> ((Loop)child).execute();
             case OUT -> ((Out)child).execute();
             case INTEGER, OBJECT -> ((Decl)child).execute();
+            case BEGIN -> ((Call)child).execute();
             default -> {
                 // Error. I sure hope this also never happens.
                 System.out.println("ERROR: Execution Error. Invalid statement token: " + stmtType);

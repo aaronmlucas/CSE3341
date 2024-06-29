@@ -1,11 +1,15 @@
+import java.util.HashMap;
 import java.util.Stack;
 // To properly utilize this, new blocks should be created when entering a new scope, and removed when exiting a scope.
 // This is meant to provide a way to keep track of variables and their scope during run-time.
 public class ProgramStack {
     private Stack<ProgramBlock> stack = null;
+    public HashMap<String, Function> functions = null;
+    
     // Program Stack: Holds the variables declared. All variables 
     ProgramStack(){
         this.stack = new Stack<>();
+        this.functions = new HashMap<>();
     }
 
     // Add a new block to the stack. Variables declared before this block are still in scope.
@@ -47,12 +51,4 @@ public class ProgramStack {
         }
     }
 
-    // Doesn't work with how it is currently implemented. Since this is not graded for this project, I am not going to worry about it for now.
-    // public void checkVariableType(String name, Core type){
-    //     CoreVariable var = getVariable(name);
-    //     if (var.getType() != type){
-    //         System.out.println("ERROR: Variable " + name + " is not of type " + type);
-    //         System.exit(0);
-    //     }
-    // }
 }
